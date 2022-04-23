@@ -1,0 +1,26 @@
+C1
+Attacco al macDonald
+12-02-2021
+11-03-2022
+Campo dei fiori 
+Mazza
+Coltello
+#
+C2
+Attacco a Niside
+12-02-2022
+11-03-2023
+Campo delle margherite 
+Spada
+Elmo
+#
+C3
+Difesa di Roma
+12-02-2000
+11-03-2001
+Campo della Libertà 
+Fucile
+Manganello
+#
+
+
