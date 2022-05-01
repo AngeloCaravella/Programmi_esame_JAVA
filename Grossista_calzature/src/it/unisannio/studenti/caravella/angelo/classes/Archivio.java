@@ -35,9 +35,9 @@ public class Archivio {
 		Stoccaggio s = Stoccaggio.read(sc3);
 
 		while (s != null) {
-			CollegamentoProdottoMagazzino(s.getCodice_prodotto(), s.getCodice_magazzino());
-
+		
 			this.stoccaggio.add(s);
+			CollegamentoProdottoMagazzino(s.getCodice_prodotto(), s.getCodice_magazzino());
 			s = Stoccaggio.read(sc3);
 		}
 
