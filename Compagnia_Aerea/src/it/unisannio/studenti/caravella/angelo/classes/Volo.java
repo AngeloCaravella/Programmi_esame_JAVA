@@ -24,6 +24,7 @@ public class Volo {
 		this.data_p = data_p;
 		this.numero_massimo_posti = numero_massimo_posti;
 		this.codice_fisc_clienti = codice_fisc_clienti;
+		this.clienti=new LinkedList<Cliente>();
 	}
 
 	public static Volo read(Scanner sc) {
@@ -179,6 +180,19 @@ public class Volo {
 		return codice_fisc_clienti;
 	}
 
+	
+	
+
+	/**
+	 * @return the clienti
+	 */
+	public LinkedList<Cliente> getClienti() {
+		return clienti;
+	}
+	public void addCliente(Cliente c) {
+		this.clienti.add(c);
+	}
+
 	public void print(PrintStream ps2) {
 		ps2.println(this.identificativo);
 		ps2.println(this.citta_p);
@@ -202,5 +216,6 @@ public class Volo {
 	private Date data_p;
 	private int numero_massimo_posti;
 	private LinkedList<String> codice_fisc_clienti;
+	private LinkedList <Cliente> clienti;
 
 }
