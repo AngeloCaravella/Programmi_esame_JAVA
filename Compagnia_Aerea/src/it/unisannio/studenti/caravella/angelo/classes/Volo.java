@@ -24,7 +24,7 @@ public class Volo {
 		this.data_p = data_p;
 		this.numero_massimo_posti = numero_massimo_posti;
 		this.codice_fisc_clienti = codice_fisc_clienti;
-		this.clienti=new LinkedList<Cliente>();
+		this.clienti = new LinkedList<Cliente>();
 	}
 
 	public static Volo read(Scanner sc) {
@@ -48,7 +48,11 @@ public class Volo {
 		try {
 			data = Constants.ddMMyyyy.parse(d);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.err.println("Catturata un eccezione di tipo ParseException: ");
+			System.err.println("Non è possibile convertire la stringa: " + d + " in data");
+			System.out.println("Verròà assegnata  la data ordierna");
+			data = new Date();
+
 		}
 
 		if (!sc.hasNextLine())
@@ -115,9 +119,13 @@ public class Volo {
 		String num = sc.nextLine();
 		if (num.equals(""))
 			return null;
+		int num_m_p = 0;
+		try {
+			num_m_p = Integer.parseInt(num);
+		} catch (NumberFormatException n) {
+			System.err.println("Catturata un' eccezione di tipo NumberFormatException per il numero" + num);
 
-		int num_m_p = Integer.parseInt(num);
-
+		}
 		LinkedList<String> clienti = new LinkedList<String>();
 
 		String cli = null;
@@ -180,17 +188,16 @@ public class Volo {
 		return codice_fisc_clienti;
 	}
 
-	
-	
-
 	/**
 	 * @return the clienti
 	 */
 	public LinkedList<Cliente> getClienti() {
 		return clienti;
 	}
+
 	public void addCliente(Cliente c) {
 		this.clienti.add(c);
+		this.codice_fisc_clienti.add(c.getCodice_fiscale());
 	}
 
 	public void print(PrintStream ps2) {
@@ -216,6 +223,6 @@ public class Volo {
 	private Date data_p;
 	private int numero_massimo_posti;
 	private LinkedList<String> codice_fisc_clienti;
-	private LinkedList <Cliente> clienti;
+	private LinkedList<Cliente> clienti;
 
 }

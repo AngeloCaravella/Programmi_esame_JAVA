@@ -4,9 +4,9 @@ import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.*;
 
-import it.unisannio.studenti.caravella.angelo.testers.FlightAlreadyBookedException;
 import it.unisannio.studenti.caravella.angelo.utils.ClientNotFoundException;
 import it.unisannio.studenti.caravella.angelo.utils.Constants;
+import it.unisannio.studenti.caravella.angelo.utils.FlightAlreadyBookedException;
 import it.unisannio.studenti.caravella.angelo.utils.FlightNotFoundException;
 import it.unisannio.studenti.caravella.angelo.utils.FlightTester;
 import it.unisannio.studenti.caravella.angelo.utils.FlightsTesterByDate;
@@ -21,7 +21,7 @@ public class Compagnia_Viaggi {
 	 * @param clienti
 	 * @param voli
 	 */
-	public Compagnia_Viaggi(HashMap<String, Cliente> clienti, HashMap<String, Volo> voli) {
+	private Compagnia_Viaggi(HashMap<String, Cliente> clienti, HashMap<String, Volo> voli) {
 		this.clienti = clienti;
 		this.voli = voli;
 	}
@@ -37,45 +37,42 @@ public class Compagnia_Viaggi {
 
 		this.voli = new HashMap<String, Volo>();
 
-		Volo voli = Volo.read(sc2);
-		while (voli != null) {
-			this.voli.put(voli.getIdentificativo(), voli);
-			GetFlights(voli.getIdentificativo());
-			voli = Volo.read(sc2);
+		Volo volo = Volo.read(sc2);
+		while (volo != null) {
+			this.voli.put(volo.getIdentificativo(), volo);
+			getFlights(volo);
+			volo = Volo.read(sc2);
 
 		}
 
 	}
 
-	private void GetFlights(String id) {
-		Volo v = this.voli.get(id);
+	private void getFlights(Volo v) {
+
 		LinkedList<String> codici = v.getCodice_fisc_clienti();
-		try {
-			SearchClients(codici, v);
-		} catch (ClientNotFoundException c) {
-			System.err.println(" Il cliente non è stato trovato" + c.getStackTrace());
-			Cliente cli = Cliente.read();
-			if (cli != null)
-				this.clienti.put(cli.getCodice_fiscale(), cli);
-			cli.addVoli(v);
-			v.addCliente(cli);
-		}
-
-	}
-
-	private void SearchClients(LinkedList<String> codici, Volo voli) {
+		Cliente c = null;
 		for (String s : codici) {
 
-			if (this.clienti.get(s) == null)
-				throw new ClientNotFoundException("Cliente non trovato");
-			else {
+			try {
 
-				Cliente c = this.clienti.get(s);
-				c.addVoli(voli);
-				voli.addCliente(c);
+				c = searchClients(s);
+				c.addVoli(v);
+				v.addCliente(c);
+
+			} catch (ClientNotFoundException e) {
+				System.err.println("E' stata catturata un' eccezione di tipo ClientNotFoundException ");
+				System.err.println(e.getMessage());
+				System.err.println("Il cliente non sarà prenotato");
 			}
-
 		}
+	}
+
+	private Cliente searchClients(String codice) {
+
+		Cliente c = this.clienti.get(codice);
+		if (c != null)
+			return c;
+		throw new ClientNotFoundException("Il cliente con il codice fiscale: " + codice + " non è stato trovato");
 
 	}
 ////////////////////////////////////////////////////
@@ -141,19 +138,22 @@ public class Compagnia_Viaggi {
 	}
 
 	public Compagnia_Viaggi SearchFlightByDate(String d) throws ParseException {
-		Date data= Constants.ddMMyyyy.parse(d);
-		FlightsTesterByDate ff= new FlightsTesterByDate(data);
-		
+		Date data = Constants.ddMMyyyy.parse(d);
+		FlightsTesterByDate ff = new FlightsTesterByDate(data);
+
 		return this.FlightFilter(ff);
 	}
+
 	public Compagnia_Viaggi SearchFlightByStartCity(String cit_p) {
 		FlightsTesterByStartCity ff = new FlightsTesterByStartCity(cit_p);
 		return this.FlightFilter(ff);
-		}
+	}
+
 	public Compagnia_Viaggi SearchFlightByEndCity(String cit_a) {
 		FlightsTesterByEndCity ff = new FlightsTesterByEndCity(cit_a);
 		return this.FlightFilter(ff);
-		}
+	}
+
 	public void SearchClient(String codice_fiscale) {
 
 		Cliente cl = this.clienti.get(codice_fiscale);
@@ -168,14 +168,19 @@ public class Compagnia_Viaggi {
 		Set<String> chiavi = this.voli.keySet();
 		HashMap<String, Volo> volifiltrati = new HashMap<String, Volo>();
 		HashMap<String, Cliente> clientifiltrati = new HashMap<String, Cliente>();
-
+		Volo v = null;
 		for (String s : chiavi) {
+			v = this.voli.get(s);
+			if (ff.Verify(v)) {
+				volifiltrati.put(s, v);
+				LinkedList<Cliente> clientitoadd = v.getClienti();
 
-			if (ff.Verify(this.voli.get(s)))
-				volifiltrati.put(s, this.voli.get(s));
-
+				for (Cliente c : clientitoadd) {
+					clientifiltrati.put(c.getCodice_fiscale(), c);
+				}
+			}
 		}
-		clientifiltrati.putAll(this.clienti);
+
 		return new Compagnia_Viaggi(clientifiltrati, volifiltrati);
 	}
 
@@ -218,8 +223,5 @@ public class Compagnia_Viaggi {
 
 	private HashMap<String, Cliente> clienti;
 	private HashMap<String, Volo> voli;
-
-	
-	
 
 }

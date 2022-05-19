@@ -1,5 +1,6 @@
 package it.unisannio.studenti.caravella.angelo.classes;
 
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class Iscritto {
 		this.nome = nome;
 		this.cognome = cognome;
 		this.esercitazioni = esercitazioni;
-		this.eserc= new LinkedList<Esercitazione>();
+		this.eserc = new LinkedList<Esercitazione>();
 	}
 
 	public static Iscritto read(Scanner sc) {
@@ -39,13 +40,45 @@ public class Iscritto {
 			if (!sc.hasNextLine())
 				return null;
 			es = sc.nextLine();
-			if (!es.equals("#"))
-				esr.add(es);
+			if (es.equals("#"))
+				break;
+			esr.add(es);
 		} while (!es.equals("#"));
 		return new Iscritto(mat, nome, cognome, esr);
 
 	}
-	
+
+	public static Iscritto read() throws ParseException {
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Inserisci la matricola ");
+		String mat = sc.nextLine();
+		if (mat.equals(""))
+			return null;
+
+		System.out.println("Inserisci il nome: ");
+		String nome = sc.nextLine();
+		if (nome.equals(""))
+			return null;
+
+		System.out.println("Inserisci il cognome: ");
+		String cognome = sc.nextLine();
+		if (cognome.equals(""))
+			return null;
+
+		String at = null;
+		LinkedList<String> esr = new LinkedList<String>();
+		do {
+
+			System.out.println("Inserisci l'esercitazione: ");
+			at = sc.nextLine();
+
+			esr.add(at);
+		} while (!at.equals(""));
+
+		return new Iscritto(mat, nome, cognome, esr);
+	}
+
 	@Override
 	public String toString() {
 		return "Iscritto [matricola=" + matricola + ", nome=" + nome + ", cognome=" + cognome + ", esercitazioni="
@@ -66,16 +99,48 @@ public class Iscritto {
 		return esercitazioni;
 	}
 
+	/**
+	 * @return the eserc
+	 */
+	public LinkedList<Esercitazione> getEserc() {
+		return eserc;
+	}
+
 	public void addEs(Esercitazione es) {
-		
+
 		this.eserc.add(es);
 	}
-	
-	
+
+	/**
+	 * @return the nome
+	 */
+	public String getNome() {
+		return nome;
+	}
+
+	/**
+	 * @return the cognome
+	 */
+	public String getCognome() {
+		return cognome;
+	}
+
+	public void Print(PrintStream ps) {
+		ps.println(this.getMatricola());
+		ps.println(this.getNome());
+		ps.println(this.getCognome());
+
+		for (String s : this.esercitazioni) {
+			ps.println(s);
+		}
+		ps.println("#");
+
+	}
+
 	private String matricola;
 	private String nome;
 	private String cognome;
 	private LinkedList<String> esercitazioni;
 	private LinkedList<Esercitazione> eserc;
-	
+
 }

@@ -23,7 +23,8 @@ public class TesterFiltri {
 			if (cli != null)
 				viaggi.addClient(cli);
 			cli = Cliente.read();
-		} while (cli != null); // - Inserimento di una nuova prenotazione
+		} while (cli != null); 
+		// - Inserimento di una nuovo volo
 
 		Volo voli = Volo.read();
 		do {
@@ -48,12 +49,13 @@ public class TesterFiltri {
 			System.out.println("Inserire l'id del volo di cui si vuole effettuare la prenotazione: ");
 			id_v = sc3.nextLine().strip();
 		}
+	
 
 		viaggi.NuovaPrenotazione(id_c, id_v);
 
 		// - Cancellazione di una prenotazione esistente
 		viaggi.RemoveFlight( "V1");
-
+	
 		// - Visualizzazione della lista dei clienti prenotati ad un volo
 		viaggi.SearchFlight("V2").PrintClients();
 

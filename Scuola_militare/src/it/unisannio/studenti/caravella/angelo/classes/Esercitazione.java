@@ -1,5 +1,6 @@
 package it.unisannio.studenti.caravella.angelo.classes;
 
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.*;
 
@@ -23,7 +24,7 @@ public class Esercitazione {
 		this.data_f = data_f;
 		this.nome_campo_m = nome_campo_m;
 		this.attrezzature = attrezzature;
-		this.i = null;
+		this.iscritti = new LinkedList<Iscritto>();
 	}
 
 	public static Esercitazione read(Scanner sc) {
@@ -70,14 +71,66 @@ public class Esercitazione {
 
 		return new Esercitazione(c, de, data_i, data_f, nome_c, attre);
 	}
-	
-	
-	
+
+	public static Esercitazione read() throws ParseException {
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Inserisci il codice dell' esercitazione: ");
+		String c = sc.nextLine();
+		if (c.equals(""))
+			return null;
+
+		System.out.println("Inserisci la denominazione dell' esercitazione: ");
+		String de = sc.nextLine();
+		if (de.equals(""))
+			return null;
+
+		System.out.println("Inserisci la data di inzio: ");
+		String dai = sc.nextLine();
+		Date data_i = null;
+		try {
+			data_i = Constants.ddMMyyyy.parse(dai);
+		} catch (ParseException e) {
+			System.err.println("Cattura un 'eccezione di tipo ParseException");
+			System.out.println("Inserisci la data di inizio di nuovo: ");
+			dai = sc.nextLine();
+			data_i = Constants.ddMMyyyy.parse(dai);
+		}
+
+		System.out.println("Inserisci la data di fine: ");
+		String daf = sc.nextLine();
+
+		Date data_f = null;
+		try {
+			data_f = Constants.ddMMyyyy.parse(daf);
+		} catch (ParseException e) {
+			System.err.println("Cattura un 'eccezione di tipo ParseException");
+			System.out.println("Inserisci la data di fine di nuovo: ");
+			daf = sc.nextLine();
+			data_f = Constants.ddMMyyyy.parse(daf);
+		}
+
+		System.out.println("Inserisci il nome del campo: ");
+		String nome_c = sc.nextLine();
+
+		String at = null;
+		LinkedList<String> attre = new LinkedList<String>();
+		do {
+
+			System.out.println("Inserisci l'attrezzatura: ");
+			at = sc.nextLine();
+
+			attre.add(at);
+		} while (!at.equals(""));
+
+		return new Esercitazione(c, de, data_i, data_f, nome_c, attre);
+	}
+
 	@Override
 	public String toString() {
 		return "Esercitazione [codice_id=" + codice_id + ", denominazione=" + denominazione + ", data_i=" + data_i
-				+ ", data_f=" + data_f + ", nome_campo_m=" + nome_campo_m + ", attrezzature=" + attrezzature + ", i="
-				+ i + "]";
+				+ ", data_f=" + data_f + ", nome_campo_m=" + nome_campo_m + ", attrezzature=" + attrezzature
+				+ ", iscritti=" + iscritti + "]";
 	}
 
 	/**
@@ -123,24 +176,29 @@ public class Esercitazione {
 	}
 
 	/**
-	 * @return the i
+	 * @return the iscritti
 	 */
-	public Iscritto getI() {
-		return i;
+	public LinkedList<Iscritto> getIscritti() {
+		return iscritti;
 	}
 
-	
+	public void addIscritto(Iscritto is) {
 
-
-	/**
-	 * @param i the i to set
-	 */
-	public void setI(Iscritto i) {
-		this.i = i;
+		this.iscritti.add(is);
 	}
 
+	public void Print(PrintStream ps) {
+		ps.println(this.getCodice_id());
+		ps.println(this.getDenominazione());
+		ps.println(Constants.ddMMyyyy.format(this.getData_i()));
+		ps.println(Constants.ddMMyyyy.format(this.getData_f()));
+		ps.println(this.getNome_campo_m());
+		for (String s : this.attrezzature) {
+			ps.println(s);
+		}
+		ps.println("#");
 
-
+	}
 
 	private String codice_id;
 	private String denominazione;
@@ -148,5 +206,5 @@ public class Esercitazione {
 	private Date data_f;
 	private String nome_campo_m;
 	private LinkedList<String> attrezzature;
-	private Iscritto i;
+	private LinkedList<Iscritto> iscritti;
 }

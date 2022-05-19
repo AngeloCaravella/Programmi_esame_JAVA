@@ -92,7 +92,9 @@ public class Cliente {
 	public void addVoli(Volo v) {
 		this.voli.add(v);
 	}
-	
+	public void removeVoli(Volo v) {
+		this.voli.remove(v);
+	}
 	public  void print(PrintStream ps2) {
 		ps2.println(this.codice_fiscale);
 		ps2.println(this.nome);
